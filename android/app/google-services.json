@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "368793208371",
+    "project_id": "better-nova-connections",
+    "storage_bucket": "better-nova-connections.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368793208371:android:f48f7f87cc1392fe0a8546",
+        "android_client_info": {
+          "package_name": "com.transit.bnc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368793208371-kgbe0ptmibssq8a9d5b1eea9am5euh1t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5wzk59nIIh8Ll6syfHlmuwJul7yoswHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368793208371-kgbe0ptmibssq8a9d5b1eea9am5euh1t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "368793208371-9v9gr5p279nhr3rfnndau5307phn64lq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.transit.bnc"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
