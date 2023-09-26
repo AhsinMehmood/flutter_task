@@ -39,6 +39,7 @@ class DeparturesController with ChangeNotifier {
 
         for (final item in result) {
           print(item['Min']);
+          // if (item['Min'] == '') {}
           if (startStationCode == 'New Carrollton') {
             if (item['DestinationName'] == 'N Carrollton' ||
                 item['DestinationName'] == 'New Carrollton' &&
@@ -64,7 +65,7 @@ class DeparturesController with ChangeNotifier {
           }
         }
         railStations.removeWhere((element) => element.min == '');
-        print(railStations.length);
+        // print(railStations.length);
         _departures = railStations;
         uniqueMinValues.clear();
         // print(_departures.length);

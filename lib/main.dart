@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_task/Controllers/app_settings.dart';
@@ -21,9 +20,15 @@ import 'ui/splash_ui.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final themeStr = await rootBundle.loadString('assets/theme.json');
+  final themeStrDark = await rootBundle.loadString('assets/dark_theme.json');
+
   final themeJson = jsonDecode(themeStr);
+  final darkThemeJson = jsonDecode(themeStrDark);
+
   final theme = ThemeDecoder.decodeThemeData(themeJson)!;
-  await Firebase.initializeApp();
+  final darkTheme = ThemeDecoder.decodeThemeData(darkThemeJson)!;
+
+  // await Firebase.initializeApp();
   // FlutterError.onError = (errorDetails) {
   //   FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   // };
@@ -34,19 +39,7 @@ void main() async {
   // };
   runApp(DevicePreview(
     enabled: false,
-    builder: (context) => MyApp(
-      theme: theme,
-    ), // Wrap your app
-  ));
-}
-
-class MyApp extends StatelessWidget {
-  final ThemeData theme;
-  const MyApp({super.key, required this.theme});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
+    builder: (context) => MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AppSettingsController()),
         ChangeNotifierProvider(create: (context) => MetroRailController()),
@@ -55,17 +48,38 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => DirectionsController()),
         ChangeNotifierProvider(create: (context) => DeparturesController()),
       ],
-      child: GetMaterialApp(
-        useInheritedMediaQuery: true,
-        locale: DevicePreview.locale(context),
-        builder: DevicePreview.appBuilder,
-        title: 'Flutter Task',
-        debugShowCheckedModeBanner: false,
-        theme: theme.copyWith(
-          textTheme: GoogleFonts.nunitoTextTheme(theme.textTheme),
-        ),
-        home: const SplashUi(),
+      child: MyApp(
+        theme: theme,
+        themeStrDark: darkTheme,
       ),
+    ), // Wrap your app
+  ));
+}
+
+class MyApp extends StatelessWidget {
+  final ThemeData theme;
+  final ThemeData themeStrDark;
+  const MyApp({super.key, required this.theme, required this.themeStrDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final AppSettingsController appSettingsController =
+        Provider.of<AppSettingsController>(context);
+    return GetMaterialApp(
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+      title: 'BNC',
+      debugShowCheckedModeBanner: false,
+      themeMode:
+          appSettingsController.isDark ? ThemeMode.dark : ThemeMode.light,
+      darkTheme: themeStrDark.copyWith(
+        textTheme: GoogleFonts.nunitoTextTheme(theme.textTheme),
+      ),
+      theme: theme.copyWith(
+        textTheme: GoogleFonts.nunitoTextTheme(theme.textTheme),
+      ),
+      home: const SplashUi(),
     );
   }
 }

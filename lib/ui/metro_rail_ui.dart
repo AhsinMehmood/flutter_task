@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_task/Controllers/app_settings.dart';
 import 'package:flutter_task/Controllers/metro_rail_controller.dart';
 import 'package:flutter_task/Global/hex_color.dart';
 import 'package:flutter_task/Models/metro_rail_model.dart';
 import 'package:flutter_task/ui/metro_rail_stations_ui.dart';
 import 'package:get/get.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+// import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 
 class MetroRail extends StatefulWidget {
@@ -16,7 +17,7 @@ class MetroRail extends StatefulWidget {
 }
 
 class _MetroRailState extends State<MetroRail> {
-  bool _loading = true;
+  bool _loading = false;
   List<MetroRailModel> _metroRailsFilter = [];
   @override
   void initState() {
@@ -38,15 +39,19 @@ class _MetroRailState extends State<MetroRail> {
   Widget build(BuildContext context) {
     final MetroRailController metroRailProvider =
         Provider.of<MetroRailController>(context);
+    final AppSettingsController appSettingsController =
+        Provider.of<AppSettingsController>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: appSettingsController.isDark
+          ? Theme.of(context).cardColor
+          : Colors.white,
       appBar: AppBar(
         title: Text(
           'Metro Rail',
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
                 color: Colors.white,
                 fontSize: 14,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w500,
               ),
         ),
         elevation: 0.0,
@@ -57,23 +62,25 @@ class _MetroRailState extends State<MetroRail> {
             child: Icon(
               Icons.search,
               size: 24,
+              color: Colors.white,
             ),
           ),
         ],
         systemOverlayStyle: SystemUiOverlayStyle(
           systemNavigationBarColor: Colors.white,
-          systemNavigationBarIconBrightness: Brightness.dark,
+          systemNavigationBarIconBrightness: Brightness.light,
           // systemNavigationBarDividerColor: null,
           statusBarColor: HexColor(colorPurple),
-          statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness:
+              appSettingsController.isDark ? Brightness.dark : Brightness.light,
         ),
         backgroundColor: HexColor(colorPurple),
       ),
       body: Column(
         children: [
           const SizedBox(
-            height: 20,
+            height: 10,
           ),
           Container(
             height: 50,
@@ -81,7 +88,9 @@ class _MetroRailState extends State<MetroRail> {
                 const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
             width: Get.width,
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: appSettingsController.isDark
+                    ? Theme.of(context).cardColor
+                    : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: HexColor(colorGrey80),
@@ -101,7 +110,8 @@ class _MetroRailState extends State<MetroRail> {
                   ),
                   child: Icon(
                     Icons.search,
-                    color: HexColor(colorBlack60),
+                    size: 24,
+                    color: HexColor(colorGrey80),
                   ),
                 ),
                 const SizedBox(
@@ -109,6 +119,10 @@ class _MetroRailState extends State<MetroRail> {
                 ),
                 Expanded(
                     child: TextFormField(
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: appSettingsController.isDark
+                          ? Colors.white
+                          : Colors.black),
                   onChanged: (String value) {
                     setState(() {
                       search = value;
@@ -167,6 +181,8 @@ class _MetroRailState extends State<MetroRail> {
   }
 
   cardUi(MetroRailModel metroRail) {
+    final AppSettingsController appSettingsController =
+        Provider.of<AppSettingsController>(context);
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
       child: InkWell(
@@ -183,23 +199,26 @@ class _MetroRailState extends State<MetroRail> {
           child: Row(
             children: [
               Container(
-                height: 43,
-                width: 43,
+                height: 35,
+                width: 35,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(500),
-                  color: _checkDisplayColor(metroRail.displayName).first,
-                ),
-                padding: const EdgeInsets.all(5),
-                child: Center(
-                  child: Container(
-                    height: 35,
-                    width: 35,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(500),
-                      color: _checkDisplayColor(metroRail.displayName).last,
-                    ),
-                  ),
-                ),
+                    borderRadius: BorderRadius.circular(500),
+                    color: _checkDisplayColor(metroRail.displayName).last,
+                    border: Border.all(
+                      color: _checkDisplayColor(metroRail.displayName).first,
+                      width: 5,
+                    )),
+                // padding: const EdgeInsets.all(5),
+                // child: Center(
+                //   child: Container(
+                //     height: 35,
+                //     width: 35,
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(500),
+                //       color: _checkDisplayColor(metroRail.displayName).last,
+                //     ),
+                //   ),
+                // ),
               ),
               const SizedBox(
                 width: 10,
@@ -207,7 +226,9 @@ class _MetroRailState extends State<MetroRail> {
               Text(
                 '${metroRail.displayName} Line',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.black,
+                      color: appSettingsController.isDark
+                          ? Colors.white
+                          : Colors.black,
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                     ),

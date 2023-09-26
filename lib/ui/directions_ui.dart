@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter_task/Controllers/app_settings.dart';
 import 'package:flutter_task/Controllers/directions_controller.dart';
 
 import 'package:flutter_task/Models/metro_rail_model.dart';
@@ -53,25 +55,28 @@ class _DirectionsUiState extends State<DirectionsUi> {
   Widget build(BuildContext context) {
     final DirectionsController directionsController =
         Provider.of<DirectionsController>(context);
+    final AppSettingsController appSettingsController =
+        Provider.of<AppSettingsController>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
         leading: InkWell(
           onTap: () {
             Get.back();
           },
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.black,
+            color: appSettingsController.isDark ? Colors.white : Colors.black,
+            size: 21,
           ),
         ),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 15),
+            padding: const EdgeInsets.only(right: 15),
             child: Icon(
               Icons.search,
-              color: Colors.black,
+              color: appSettingsController.isDark ? Colors.white : Colors.black,
               size: 24,
             ),
           ),
@@ -80,36 +85,46 @@ class _DirectionsUiState extends State<DirectionsUi> {
         title: Text(
           'Directions',
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: Colors.black,
+                color:
+                    appSettingsController.isDark ? Colors.white : Colors.black,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
         ),
-        backgroundColor: Colors.white,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.white,
-          systemNavigationBarIconBrightness: Brightness.dark,
+        backgroundColor: appSettingsController.isDark ? null : Colors.white,
+        // centerTitle: true,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          systemNavigationBarColor: appSettingsController.isDark
+              ? Theme.of(context).cardColor
+              : Colors.white,
+          systemNavigationBarIconBrightness:
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
           // systemNavigationBarDividerColor: null,
-          statusBarColor: Colors.white,
+          statusBarColor: appSettingsController.isDark
+              ? Theme.of(context).cardColor
+              : Colors.white,
           statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
+          statusBarBrightness:
+              appSettingsController.isDark ? Brightness.dark : Brightness.light,
         ),
       ),
+      backgroundColor: appSettingsController.isDark
+          ? Theme.of(context).cardColor
+          : Colors.white,
       body: Column(
         children: [
-          const SizedBox(
-            height: 20,
-          ),
           Container(
             height: 50,
             margin:
                 const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
             width: Get.width,
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: appSettingsController.isDark
+                    ? Theme.of(context).cardColor
+                    : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: HexColor(colorGrey80),
+                  color: HexColor(colorGrey60),
                 )),
             padding: const EdgeInsets.only(
               bottom: 5,
@@ -126,7 +141,10 @@ class _DirectionsUiState extends State<DirectionsUi> {
                   ),
                   child: Icon(
                     Icons.search,
-                    color: HexColor(colorBlack60),
+                    color: appSettingsController.isDark
+                        ? HexColor(colorGrey80)
+                        : HexColor(colorBlack60),
+                    size: 24,
                   ),
                 ),
                 const SizedBox(
@@ -134,6 +152,12 @@ class _DirectionsUiState extends State<DirectionsUi> {
                 ),
                 Expanded(
                     child: TextFormField(
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: appSettingsController.isDark
+                            ? Colors.white
+                            : Colors.black,
+                        fontSize: 12,
+                      ),
                   onChanged: (String value) {
                     setState(() {
                       search = value.capitalizeFirst!;
@@ -160,7 +184,9 @@ class _DirectionsUiState extends State<DirectionsUi> {
                       border: InputBorder.none,
                       hintStyle:
                           Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                color: HexColor(colorGrey80),
+                                color: appSettingsController.isDark
+                                    ? HexColor(colorGrey80)
+                                    : HexColor(colorBlack60),
                                 fontSize: 12,
                               )),
                 ))
@@ -199,8 +225,12 @@ class _DirectionsUiState extends State<DirectionsUi> {
                                           .textTheme
                                           .headlineMedium!
                                           .copyWith(
-                                              fontSize: 15,
-                                              color: Colors.black),
+                                              fontSize: 12,
+                                              color:
+                                                  appSettingsController.isDark
+                                                      ? Colors.white
+                                                      : HexColor(colorBlack100),
+                                              fontWeight: FontWeight.w500),
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -227,9 +257,12 @@ class _DirectionsUiState extends State<DirectionsUi> {
                                               .textTheme
                                               .bodyMedium!
                                               .copyWith(
-                                                color: Colors.black,
+                                                color:
+                                                    appSettingsController.isDark
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                 fontSize: 12,
-                                                fontWeight: FontWeight.w400,
+                                                fontWeight: FontWeight.w300,
                                               ),
                                         ),
                                       ],
@@ -247,9 +280,14 @@ class _DirectionsUiState extends State<DirectionsUi> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          Image.asset(
-                                            'assets/directions_subway.png',
-                                            color: Colors.black,
+                                          SvgPicture.asset(
+                                            'assets/directions_subway.svg',
+                                            // ignore: deprecated_member_use
+                                            color: appSettingsController.isDark
+                                                ? Colors.white
+                                                : HexColor(colorBlack100),
+                                            height: 17,
+                                            width: 17,
                                           ),
                                           const SizedBox(
                                             width: 10,
@@ -260,7 +298,10 @@ class _DirectionsUiState extends State<DirectionsUi> {
                                                 .textTheme
                                                 .bodyMedium!
                                                 .copyWith(
-                                                  color: Colors.black,
+                                                  color: appSettingsController
+                                                          .isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -294,19 +335,22 @@ class _DirectionsUiState extends State<DirectionsUi> {
                               metroRailStationsModels:
                                   widget.metroRailStationsModels,
                               title: Padding(
-                                padding: const EdgeInsets.only(left: 0),
+                                padding: const EdgeInsets.only(left: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       directions.name,
-                                      overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
                                           .textTheme
                                           .headlineMedium!
                                           .copyWith(
-                                              fontSize: 15,
-                                              color: Colors.black),
+                                              fontSize: 12,
+                                              color:
+                                                  appSettingsController.isDark
+                                                      ? Colors.white
+                                                      : HexColor(colorBlack100),
+                                              fontWeight: FontWeight.w500),
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -333,9 +377,12 @@ class _DirectionsUiState extends State<DirectionsUi> {
                                               .textTheme
                                               .bodyMedium!
                                               .copyWith(
-                                                color: Colors.black,
+                                                color:
+                                                    appSettingsController.isDark
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                 fontSize: 12,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.w300,
                                               ),
                                         ),
                                       ],
@@ -353,9 +400,14 @@ class _DirectionsUiState extends State<DirectionsUi> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          Image.asset(
-                                            'assets/directions_subway.png',
-                                            color: Colors.black,
+                                          SvgPicture.asset(
+                                            'assets/directions_subway.svg',
+                                            // ignore: deprecated_member_use
+                                            color: appSettingsController.isDark
+                                                ? Colors.white
+                                                : HexColor(colorBlack100),
+                                            height: 17,
+                                            width: 17,
                                           ),
                                           const SizedBox(
                                             width: 10,
@@ -366,7 +418,10 @@ class _DirectionsUiState extends State<DirectionsUi> {
                                                 .textTheme
                                                 .bodyMedium!
                                                 .copyWith(
-                                                  color: Colors.black,
+                                                  color: appSettingsController
+                                                          .isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -420,6 +475,8 @@ class _MyCustomExpansionTileState extends State<MyCustomExpansionTile> {
 
   @override
   Widget build(BuildContext context) {
+    final AppSettingsController appSettingsController =
+        Provider.of<AppSettingsController>(context);
     return InkWell(
       onTap: () {
         Get.to(() => MetroStopsUi(
@@ -440,8 +497,8 @@ class _MyCustomExpansionTileState extends State<MyCustomExpansionTile> {
                 Row(
                   children: [
                     Container(
-                      height: 40,
-                      width: 47,
+                      height: 36,
+                      width: 47.53,
                       margin: const EdgeInsets.only(right: 10),
                       decoration: BoxDecoration(
                         color: widget.color,
@@ -453,6 +510,7 @@ class _MyCustomExpansionTileState extends State<MyCustomExpansionTile> {
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: Colors.white,
+                                    fontSize: 12,
                                   ),
                         ),
                       ),
@@ -470,6 +528,10 @@ class _MyCustomExpansionTileState extends State<MyCustomExpansionTile> {
                     isExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
+                    size: 21,
+                    color: appSettingsController.isDark
+                        ? Colors.white
+                        : HexColor(colorBlack80),
                   ),
                 ),
               ],

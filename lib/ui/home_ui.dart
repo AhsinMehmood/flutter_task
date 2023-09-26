@@ -6,6 +6,8 @@ import 'package:flutter_task/ui/metro_rail_ui.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import 'more_ui.dart';
+
 class Home extends StatelessWidget {
   const Home({super.key});
 
@@ -21,57 +23,63 @@ class Home extends StatelessWidget {
             Container(),
             const MetroRail(),
             Container(),
-            Container(),
+            const MoreUi(),
           ],
         ),
         backgroundColor: Colors.white,
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
+          backgroundColor:
+              settingsController.isDark ? Colors.black : Colors.white,
           selectedItemColor: HexColor(colorPurple),
-          selectedFontSize: 12,
+          selectedFontSize: 10,
+          unselectedFontSize: 10,
           selectedIconTheme: IconThemeData(color: HexColor(colorPurple)),
           selectedLabelStyle:
-              TextStyle(fontSize: 12, color: HexColor(colorPurple)),
+              TextStyle(fontSize: 10, color: HexColor(colorPurple)),
           currentIndex: settingsController.tabIndex,
           onTap: (int index) {
             settingsController.changeTabIndex(index);
           },
           items: [
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/favourite_icon.png',
+                icon: SvgPicture.asset(
+                  'assets/favorite.svg',
                   height: 24,
                   width: 24,
+                  // ignore: deprecated_member_use
                   color: settingsController.tabIndex == 0
                       ? HexColor(colorPurple)
                       : null,
                 ),
-                label: 'Favourites'),
+                label: 'Favorites'),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/directions_bus.png',
+                icon: SvgPicture.asset(
+                  'assets/directions_bus.svg',
                   height: 24,
                   width: 24,
+                  // ignore: deprecated_member_use
                   color: settingsController.tabIndex == 1
                       ? HexColor(colorPurple)
                       : null,
                 ),
                 label: 'Bus Routes'),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/directions_subway.png',
+                icon: SvgPicture.asset(
+                  'assets/directions_subway.svg',
                   height: 24,
                   width: 24,
+                  // ignore: deprecated_member_use
                   color: settingsController.tabIndex == 2
                       ? HexColor(colorPurple)
                       : null,
                 ),
                 label: 'Metro Rail'),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/pin_drop.png',
+              icon: SvgPicture.asset(
+                'assets/pin_drop.svg',
                 height: 24,
                 width: 24,
+                // ignore: deprecated_member_use
                 color: settingsController.tabIndex == 3
                     ? HexColor(colorPurple)
                     : null,
@@ -79,8 +87,9 @@ class Home extends StatelessWidget {
               label: 'Live Map',
             ),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/notes.png',
+                icon: SvgPicture.asset(
+                  'assets/notes.svg',
+                  // ignore: deprecated_member_use
                   color: settingsController.tabIndex == 4
                       ? HexColor(colorPurple)
                       : null,
@@ -120,7 +129,7 @@ class Home extends StatelessWidget {
 //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                   crossAxisAlignment: CrossAxisAlignment.center,
 //                   children: [
-//                     Image.asset('assets/favourite_icon.png'),
+//                     Image.asset('assets/favourite_icon.svg'),
 //                     Text(
 //                       'Favourites',
 //                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(

@@ -5,9 +5,10 @@ import 'package:flutter_task/Models/metro_rail_model.dart';
 import 'package:flutter_task/Models/metro_rail_stations_model.dart';
 import 'package:flutter_task/ui/directions_ui.dart';
 import 'package:get/get.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+// import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 
+import '../Controllers/app_settings.dart';
 import '../Global/hex_color.dart';
 
 class MetroRailStationsUi extends StatefulWidget {
@@ -49,25 +50,35 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
   Widget build(BuildContext context) {
     final MetroRailStationsController metroRailStationsController =
         Provider.of<MetroRailStationsController>(context);
+    final AppSettingsController appSettingsController =
+        Provider.of<AppSettingsController>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
+      backgroundColor: appSettingsController.isDark
+          ? Theme.of(context).cardColor
+          : Colors.white,
       appBar: AppBar(
         elevation: 0.0,
         leading: InkWell(
           onTap: () {
             Get.back();
           },
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.black,
+            color: appSettingsController.isDark
+                ? Colors.white
+                : HexColor(colorBlack100),
+            size: 21,
           ),
         ),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 15),
+            padding: const EdgeInsets.only(right: 15),
             child: Icon(
               Icons.search,
-              color: Colors.black,
+              color: appSettingsController.isDark
+                  ? Colors.white
+                  : HexColor(colorBlack100),
               size: 24,
             ),
           ),
@@ -75,35 +86,44 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
         title: Text(
           'Stations',
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: Colors.black,
+                color:
+                    appSettingsController.isDark ? Colors.white : Colors.black,
                 fontSize: 14,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w500,
               ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: appSettingsController.isDark
+            ? Theme.of(context).cardColor
+            : Colors.white,
         centerTitle: true,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.white,
-          systemNavigationBarIconBrightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          systemNavigationBarColor:
+              appSettingsController.isDark ? Colors.black : Colors.white,
+          systemNavigationBarIconBrightness:
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
           // systemNavigationBarDividerColor: null,
-          statusBarColor: Colors.white,
+          statusBarColor:
+              appSettingsController.isDark ? Colors.black : Colors.white,
           statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
+          statusBarBrightness:
+              appSettingsController.isDark ? Brightness.dark : Brightness.light,
         ),
         // backgroundColor: HexColor(colorPurple),
       ),
       body: Column(
         children: [
-          const SizedBox(
-            height: 20,
-          ),
+          // const SizedBox(
+          //   height: 20,
+          // ),
           Container(
             height: 50,
             margin:
                 const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
             width: Get.width,
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: appSettingsController.isDark
+                    ? Theme.of(context).cardColor
+                    : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: HexColor(colorGrey80),
@@ -123,7 +143,10 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
                   ),
                   child: Icon(
                     Icons.search,
-                    color: HexColor(colorBlack60),
+                    color: appSettingsController.isDark
+                        ? HexColor(colorGrey80)
+                        : HexColor(colorBlack60),
+                    size: 24,
                   ),
                 ),
                 const SizedBox(
@@ -152,13 +175,20 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
                     });
                   },
                   scrollPadding: const EdgeInsets.all(0),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: appSettingsController.isDark
+                          ? Colors.white
+                          : Colors.black,
+                      fontSize: 12),
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(0),
                       hintText: 'Search Stations...',
                       border: InputBorder.none,
                       hintStyle:
                           Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                color: HexColor(colorGrey80),
+                                color: appSettingsController.isDark
+                                    ? HexColor(colorGrey80)
+                                    : HexColor(colorBlack60),
                                 fontSize: 12,
                               )),
                 ))
@@ -198,6 +228,8 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
   }
 
   cardUi(metroRailStations) {
+    final AppSettingsController appSettingsController =
+        Provider.of<AppSettingsController>(context);
     return InkWell(
       onTap: () {
         Get.to(() => DirectionsUi(
@@ -210,17 +242,18 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
       child: Container(
         margin: const EdgeInsets.only(top: 1, left: 10, right: 10, bottom: 10),
         child: ListTile(
-          trailing: const Icon(Icons.keyboard_arrow_down_outlined),
+          // trailing: const Icon(Icons.keyboard_arrow_down_outlined),
           title: Text(
             metroRailStations.name,
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium!
-                .copyWith(fontSize: 15, color: Colors.black),
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                fontSize: 12,
+                color:
+                    appSettingsController.isDark ? Colors.white : Colors.black,
+                fontWeight: FontWeight.normal),
           ),
           leading: Container(
-            height: 40,
-            width: 47,
+            height: 36,
+            width: 47.53,
             margin: const EdgeInsets.only(right: 10),
             decoration: BoxDecoration(
               color: widget.color,
@@ -230,8 +263,9 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
               child: Text(
                 metroRailStations.code,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.white,
-                    ),
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal),
               ),
             ),
           ),
@@ -256,9 +290,11 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
                   Text(
                     '${widget.metroRailModel.displayName} Line',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Colors.black,
+                          color: appSettingsController.isDark
+                              ? Colors.white
+                              : Colors.black,
                           fontSize: 12,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                         ),
                   ),
                 ],

@@ -28,3 +28,8 @@ final colorGrey100 = '9D9D9D';
 final colorGrey20 = 'EBEBEB';
 final colorYellow100 = 'FFC23C';
 final colorYellow20 = 'FFF2D8';
+
+final colorBlack100 = '3D3C42';
+final colorGrey60 = 'CECECE';
+final colorBlack80 = '636267';
+final colorPurple80 = 'A88ED4';
