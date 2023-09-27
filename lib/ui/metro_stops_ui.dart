@@ -59,6 +59,8 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
   final _controller = StreamController<SwipeRefreshState>.broadcast();
 
   Stream<SwipeRefreshState> get _stream => _controller.stream;
+  Stream<SwipeRefreshState> get _stream2 => _controller.stream;
+
   @override
   Widget build(BuildContext context) {
     final DeparturesController departuresController =
@@ -193,9 +195,9 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
                     ),
                   ],
                 )
-              : SwipeRefresh.builder(
-                  stateStream: _stream,
-                  refreshTriggerPullDistance: 60.0,
+              : SwipeRefresh.material(
+                  stateStream: _stream2,
+                  // refreshTriggerPullDistance: 80.0,
                   // backgroundColor: HexColor(colorPurple),
                   onRefresh: () async {
                     await departuresController.getDepartures(
@@ -204,83 +206,51 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
                         widget.metroRailStationsModel.lineCode1);
                     _controller.sink.add(SwipeRefreshState.hidden);
                   },
-                  itemCount: departuresController.departures.length,
-                  itemBuilder: (context, index) {
-                    final DeparturesModel departuresModel =
-                        departuresController.departures[index];
-                    // if(departuresModel.min)
-                    return MyCustomExpansionTile(
-                      metroRailStationsModel: widget.metroRailModel,
-                      color: widget.color,
-                      directions: departuresModel,
-                      colorSecond: widget.secondColor,
-                      metroRailStationsModels: widget.metroRailStationsModel,
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            departuresModel.destinationName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium!
-                                .copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: appSettingsController.isDark
-                                        ? Colors.white
-                                        : HexColor(colorBlack100)),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: departuresController.departures.length,
+                      itemBuilder: (context, index) {
+                        // print(departuresController.departures[index].min);
+                        print('object');
+                        final DeparturesModel departuresModel =
+                            departuresController.departures[index];
+                        // if(departuresModel.min)
+                        return MyCustomExpansionTile(
+                          metroRailStationsModel: widget.metroRailModel,
+                          color: widget.color,
+                          directions: departuresModel,
+                          colorSecond: widget.secondColor,
+                          metroRailStationsModels:
+                              widget.metroRailStationsModel,
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                departuresModel.min == 'ARR'
-                                    ? 'Arriving'
-                                    : departuresModel.min == 'BRD'
-                                        ? 'Boarding'
-                                        : '${departuresModel.min} min',
+                                departuresModel.destinationName,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyMedium!
+                                    .headlineMedium!
                                     .copyWith(
-                                      color: appSettingsController.isDark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                        color: appSettingsController.isDark
+                                            ? Colors.white
+                                            : HexColor(colorBlack100)),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
+                              const SizedBox(
+                                height: 8,
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Container(
-                                    height: 10,
-                                    width: 10,
-                                    decoration: BoxDecoration(
-                                      color: widget.color,
-                                      borderRadius: BorderRadius.circular(120),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
                                   Text(
-                                    '${widget.metroRailModel.displayName} Line',
+                                    departuresModel.min == 'ARR'
+                                        ? 'Arriving'
+                                        : departuresModel.min == 'BRD'
+                                            ? 'Boarding'
+                                            : '${departuresModel.min} min',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -293,53 +263,97 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
                                         ),
                                   ),
                                 ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  SvgPicture.asset(
-                                    'assets/directions_subway.svg',
-                                    color: appSettingsController.isDark
-                                        ? Colors.white
-                                        : Colors.black,
-                                    height: 17,
-                                    width: 17,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    widget.metroRailStationsModel.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                          color: appSettingsController.isDark
-                                              ? Colors.white
-                                              : Colors.black,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    );
-                  },
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Container(
+                                        height: 10,
+                                        width: 10,
+                                        decoration: BoxDecoration(
+                                          color: widget.color,
+                                          borderRadius:
+                                              BorderRadius.circular(120),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        '${widget.metroRailModel.displayName} Line',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color:
+                                                  appSettingsController.isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      SvgPicture.asset(
+                                        'assets/directions_subway.svg',
+                                        color: appSettingsController.isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        height: 17,
+                                        width: 17,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        widget.metroRailStationsModel.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color:
+                                                  appSettingsController.isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
                 ),
     );
   }
@@ -371,18 +385,13 @@ class MyCustomExpansionTile extends StatefulWidget {
 class _MyCustomExpansionTileState extends State<MyCustomExpansionTile> {
   bool isExpanded = false;
   int minutes = 0;
-  @override
-  void initState() {
-    super.initState();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
     final AppSettingsController appSettingsController =
         Provider.of<AppSettingsController>(context);
     DateTime now = DateTime.now();
-    print(widget.directions.min + 'dd');
+    // print(widget.directions.min + 'dd');
     int minutes = widget.directions.min == ''
         ? 0
         : widget.directions.min == 'ARR'
@@ -390,8 +399,10 @@ class _MyCustomExpansionTileState extends State<MyCustomExpansionTile> {
             : widget.directions.min == 'BRD'
                 ? 0
                 : int.parse(widget.directions.min);
+    print(minutes);
     DateTime futureTime = now.add(Duration(minutes: minutes));
     String formattedTime = DateFormat.jm().format(futureTime);
+
     return InkWell(
       // onTap: () {
       // Get.to(() => MetroStopsUi(

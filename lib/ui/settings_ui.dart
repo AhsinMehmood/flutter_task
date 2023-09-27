@@ -782,7 +782,7 @@ class _SettingsUiState extends State<SettingsUi> {
         ),
         InkWell(
           onTap: () {
-            // Get.dialog(const StartScreenDialoge());
+            Get.dialog(const StartScreenDialoge());
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

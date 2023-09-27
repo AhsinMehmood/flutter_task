@@ -38,7 +38,7 @@ void main() async {
   //   return true;
   // };
   runApp(DevicePreview(
-    enabled: false,
+    enabled: true,
     builder: (context) => MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AppSettingsController()),

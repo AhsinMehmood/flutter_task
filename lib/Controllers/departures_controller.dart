@@ -11,14 +11,14 @@ class DeparturesController with ChangeNotifier {
 
   Future getDepartures(
       String startStationCode, String destinationCode, String line) async {
-    print(line);
-    print(startStationCode);
+    // print(line);
+    // print(startStationCode);
     String url =
         'https://api.wmata.com/StationPrediction.svc/json/GetPrediction/$destinationCode?api_key=844c2a6f10e4430c992d3188f8d591d9';
-    print(url);
+    // print(url);
     try {
       http.Response response = await http.get(Uri.parse(url));
-      print(response.body);
+      // print(response.body);
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         final List stations = jsonResponse['Trains'];
@@ -38,7 +38,7 @@ class DeparturesController with ChangeNotifier {
         List result = uniqueItems.values.toList();
 
         for (final item in result) {
-          print(item['Min']);
+          // print(item['Min']);
           // if (item['Min'] == '') {}
           if (startStationCode == 'New Carrollton') {
             if (item['DestinationName'] == 'N Carrollton' ||
@@ -54,6 +54,7 @@ class DeparturesController with ChangeNotifier {
                         'Mt Vernon Sq 7th St-Convention Center' &&
                     item['Line'] == line) {
               railStations.add(DeparturesModel.fromJson(item));
+              print(item);
               // }
             }
           } else {
@@ -64,8 +65,8 @@ class DeparturesController with ChangeNotifier {
             }
           }
         }
-        railStations.removeWhere((element) => element.min == '');
-        // print(railStations.length);
+        // railStations.removeWhere((element) => element.min == '');
+
         _departures = railStations;
         uniqueMinValues.clear();
         // print(_departures.length);
