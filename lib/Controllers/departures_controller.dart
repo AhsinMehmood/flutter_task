@@ -33,26 +33,40 @@ class DeparturesController with ChangeNotifier {
         }
 
         List result = uniqueItems.values.toList();
-
         for (final item in result) {
-          if (startStationCode == 'New Carrollton') {
+          print(result);
+
+          if (line == 'SV' && startStationCode == 'Downtown Largo') {
             if (item['DestinationName'] == 'N Carrollton' ||
                 item['DestinationName'] == 'New Carrollton' &&
                     item['Line'] == line) {
               railStations.add(DeparturesModel.fromJson(item));
-            }
-          } else if (startStationCode ==
-              'Mt Vernon Sq 7th St-Convention Center') {
-            if (item['DestinationName'] == 'Mt Vern Sq' ||
-                item['DestinationName'] ==
-                        'Mt Vernon Sq 7th St-Convention Center' &&
-                    item['Line'] == line) {
-              railStations.add(DeparturesModel.fromJson(item));
+            } else {
+              if (item['DestinationName'] == startStationCode &&
+                  item['Line'] == line) {
+                railStations.add(DeparturesModel.fromJson(item));
+              }
             }
           } else {
-            if (item['DestinationName'] == startStationCode &&
-                item['Line'] == line) {
-              railStations.add(DeparturesModel.fromJson(item));
+            if (startStationCode == 'New Carrollton') {
+              if (item['DestinationName'] == 'N Carrollton' ||
+                  item['DestinationName'] == 'New Carrollton' &&
+                      item['Line'] == line) {
+                railStations.add(DeparturesModel.fromJson(item));
+              }
+            } else if (startStationCode ==
+                'Mt Vernon Sq 7th St-Convention Center') {
+              if (item['DestinationName'] == 'Mt Vern Sq' ||
+                  item['DestinationName'] ==
+                          'Mt Vernon Sq 7th St-Convention Center' &&
+                      item['Line'] == line) {
+                railStations.add(DeparturesModel.fromJson(item));
+              }
+            } else {
+              if (item['DestinationName'] == startStationCode &&
+                  item['Line'] == line) {
+                railStations.add(DeparturesModel.fromJson(item));
+              }
             }
           }
         }

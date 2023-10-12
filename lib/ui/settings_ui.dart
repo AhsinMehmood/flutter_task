@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_task/Widgets/start_screen_dialoge.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -41,13 +42,23 @@ class _SettingsUiState extends State<SettingsUi> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: Icon(
-              Icons.search,
-              color: appSettingsController.isDark
-                  ? Colors.white
-                  : HexColor(colorBlack100),
-              size: 24,
+            padding: const EdgeInsets.all(10),
+            child: Container(
+              height: 30,
+              width: 30,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(30),
+                splashColor: Colors.grey.shade600,
+                onTap: () {
+                  showToast("Coming soon",
+                      context: context, position: const StyledToastPosition());
+                },
+                child: const Icon(
+                  Icons.search,
+                  size: 24,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ),
         ],
@@ -70,11 +81,13 @@ class _SettingsUiState extends State<SettingsUi> {
           systemNavigationBarIconBrightness:
               appSettingsController.isDark ? Brightness.light : Brightness.dark,
           // systemNavigationBarDividerColor: null,
-          statusBarColor:
-              appSettingsController.isDark ? Colors.black : Colors.white,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: appSettingsController.isDark
+              ? Theme.of(context).cardColor
+              : Colors.white,
+          statusBarIconBrightness:
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
           statusBarBrightness:
-              appSettingsController.isDark ? Brightness.dark : Brightness.light,
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
         ),
         // backgroundColor: HexColor(colorPurple),
       ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_task/Controllers/app_settings.dart';
 import 'package:flutter_task/Controllers/metro_rail_controller.dart';
 import 'package:flutter_task/Global/hex_color.dart';
 import 'package:flutter_task/Models/metro_rail_model.dart';
+import 'package:flutter_task/Widgets/custom_appbar.dart';
 import 'package:flutter_task/ui/metro_rail_stations_ui.dart';
 import 'package:get/get.dart';
 // import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -17,21 +19,8 @@ class MetroRail extends StatefulWidget {
 }
 
 class _MetroRailState extends State<MetroRail> {
-  bool _loading = false;
+  final bool _loading = false;
   List<MetroRailModel> _metroRailsFilter = [];
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 1)).then((value) async {
-      await Provider.of<MetroRailController>(context, listen: false)
-          .getMetroRails()
-          .then((value) {
-        setState(() {
-          _loading = false;
-        });
-      });
-    });
-  }
 
   String search = '';
 
@@ -46,42 +35,49 @@ class _MetroRailState extends State<MetroRail> {
           ? Theme.of(context).cardColor
           : Colors.white,
       appBar: AppBar(
-        title: Text(
-          'Metro Rail',
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-        ),
-        elevation: 0.0,
-        centerTitle: false,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(
-              Icons.search,
-              size: 24,
-              color: Colors.white,
-            ),
-          ),
-        ],
         systemOverlayStyle: SystemUiOverlayStyle(
           systemNavigationBarColor: Colors.white,
           systemNavigationBarIconBrightness: Brightness.light,
           // systemNavigationBarDividerColor: null,
           statusBarColor: HexColor(colorPurple),
           statusBarIconBrightness: Brightness.light,
-          statusBarBrightness:
-              appSettingsController.isDark ? Brightness.dark : Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
+        elevation: 0.0,
         backgroundColor: HexColor(colorPurple),
+        centerTitle: false,
+        title: Text(
+          'Metro Rail',
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                color: Colors.white,
+                fontSize: 14,
+                fontFamily: 'Nunito',
+                fontWeight: FontWeight.normal,
+              ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 20,
+            ),
+            child: IconButton(
+                onPressed: () {
+                  showToast('Coming soon',
+                      context: context,
+                      position: StyledToastPosition(align: Alignment.center));
+                },
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                  size: 24,
+                )),
+          )
+        ],
       ),
       body: Column(
         children: [
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
+          // Gutter(),
           Container(
             height: 50,
             margin:
@@ -95,64 +91,53 @@ class _MetroRailState extends State<MetroRail> {
                 border: Border.all(
                   color: HexColor(colorGrey80),
                 )),
-            padding: const EdgeInsets.only(
-              bottom: 5,
-              top: 0,
-              left: 15,
-            ),
+            padding: const EdgeInsets.only(bottom: 5, top: 0, left: 15),
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 0,
-                    top: 10,
-                    left: 0,
-                  ),
-                  child: Icon(
-                    Icons.search,
-                    size: 24,
-                    color: HexColor(colorGrey80),
-                  ),
+                  padding: const EdgeInsets.only(bottom: 0, top: 10, left: 0),
+                  child: Icon(Icons.search,
+                      size: 24, color: HexColor(colorBlack60)),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: TextFormField(
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: appSettingsController.isDark
-                          ? Colors.white
-                          : Colors.black),
-                  onChanged: (String value) {
-                    setState(() {
-                      search = value;
-                      _metroRailsFilter = metroRailProvider.metroRails
-                          .where((element) => element.displayName
-                              .toLowerCase()
-                              .contains(search.toLowerCase()))
-                          .toList();
-                      // if (value.length == 1) {
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: appSettingsController.isDark
+                                ? Colors.white
+                                : Colors.black),
+                        onChanged: (String value) {
+                          setState(() {
+                            search = value;
+                            _metroRailsFilter = metroRailProvider.metroRails
+                                .where((element) => element.displayName
+                                    .toLowerCase()
+                                    .contains(search.toLowerCase()))
+                                .toList();
+                            // if (value.length == 1) {
 
-                      // } else {
-                      //   search = value;
-                      //   _metroRailsFilter = metroRailProvider.metroRails
-                      //       .where((element) =>
-                      //           element.displayName.contains(search))
-                      //       .toList();
-                      // }
-                    });
-                  },
-                  scrollPadding: const EdgeInsets.all(0),
-                  decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.all(0),
-                      hintText: 'Search Line...',
-                      border: InputBorder.none,
-                      hintStyle:
-                          Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                color: HexColor(colorGrey80),
-                                fontSize: 12,
-                              )),
-                ))
+                            // } else {
+                            //   search = value;
+                            //   _metroRailsFilter = metroRailProvider.metroRails
+                            //       .where((element) =>
+                            //           element.displayName.contains(search))
+                            //       .toList();
+                            // }
+                          });
+                        },
+                        scrollPadding: const EdgeInsets.all(0),
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(0),
+                            hintText: 'Search Line...',
+                            border: InputBorder.none,
+                            hintStyle: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                    color: HexColor(colorBlack60),
+                                    fontSize: 12))))
               ],
             ),
           ),

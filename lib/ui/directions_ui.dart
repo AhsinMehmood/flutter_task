@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_task/Controllers/app_settings.dart';
 import 'package:flutter_task/Controllers/directions_controller.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_task/Models/metro_rail_model.dart';
 import 'package:flutter_task/Models/metro_rail_stations_model.dart';
 import 'package:flutter_task/ui/metro_stops_ui.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
 
@@ -73,13 +73,24 @@ class _DirectionsUiState extends State<DirectionsUi> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: Icon(
-              Icons.search,
-              color: appSettingsController.isDark ? Colors.white : Colors.black,
-              size: 24,
+            padding: const EdgeInsets.only(
+              right: 20,
             ),
-          ),
+            child: IconButton(
+                onPressed: () {
+                  showToast('Coming soon',
+                      context: context,
+                      position:
+                          const StyledToastPosition(align: Alignment.center));
+                },
+                icon: Icon(
+                  Icons.search,
+                  color: appSettingsController.isDark
+                      ? Colors.white
+                      : Colors.black,
+                  size: 24,
+                )),
+          )
         ],
         centerTitle: true,
         title: Text(
@@ -94,18 +105,18 @@ class _DirectionsUiState extends State<DirectionsUi> {
         backgroundColor: appSettingsController.isDark ? null : Colors.white,
         // centerTitle: true,
         systemOverlayStyle: SystemUiOverlayStyle(
-          systemNavigationBarColor: appSettingsController.isDark
-              ? Theme.of(context).cardColor
-              : Colors.white,
+          systemNavigationBarColor:
+              appSettingsController.isDark ? Colors.black : Colors.white,
           systemNavigationBarIconBrightness:
               appSettingsController.isDark ? Brightness.light : Brightness.dark,
           // systemNavigationBarDividerColor: null,
           statusBarColor: appSettingsController.isDark
               ? Theme.of(context).cardColor
               : Colors.white,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarIconBrightness:
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
           statusBarBrightness:
-              appSettingsController.isDark ? Brightness.dark : Brightness.light,
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
         ),
       ),
       backgroundColor: appSettingsController.isDark

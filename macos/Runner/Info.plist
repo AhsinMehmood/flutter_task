@@ -28,5 +28,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>io.flutter.embedded_views_preview</key>
+<true/>
+<key>GoogleMapsApiKey</key>
+<string>AIzaSyAXaR8D0qU_zo4HH6SxhiCbcm7aNsYQpHI</string>
 </dict>
 </plist>

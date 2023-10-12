@@ -6,6 +6,7 @@ import 'package:flutter_task/ui/metro_rail_ui.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import 'live_map_ui.dart';
 import 'more_ui.dart';
 
 class Home extends StatelessWidget {
@@ -33,12 +34,20 @@ class Home extends StatelessWidget {
           selectedItemColor: HexColor(colorPurple),
           selectedFontSize: 10,
           unselectedFontSize: 10,
-          selectedIconTheme: IconThemeData(color: HexColor(colorPurple)),
-          selectedLabelStyle:
-              TextStyle(fontSize: 10, color: HexColor(colorPurple)),
+          selectedIconTheme: IconThemeData(
+            color: HexColor(colorPurple),
+          ),
+          selectedLabelStyle: TextStyle(
+            fontSize: 10,
+            color: HexColor(colorPurple),
+          ),
           currentIndex: settingsController.tabIndex,
           onTap: (int index) {
-            settingsController.changeTabIndex(index);
+            if (index == 3) {
+              Get.to(() => const LiveMapUi());
+            } else {
+              settingsController.changeTabIndex(index);
+            }
           },
           items: [
             BottomNavigationBarItem(

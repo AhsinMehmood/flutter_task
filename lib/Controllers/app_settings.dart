@@ -8,6 +8,21 @@ class AppSettingsController with ChangeNotifier {
     return _isDark;
   }
 
+  int _previewTime = 30;
+  int get previewTime {
+    return _previewTime;
+  }
+
+  countDownTimerPreview() async {
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      if (_previewTime == 0) {
+        _previewTime = 30;
+      } else {
+        _previewTime--;
+      }
+    });
+  }
+
   bool _displayRoutePath = false;
   bool get displayRoutePath {
     return _displayRoutePath;

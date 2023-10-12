@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../Controllers/app_settings.dart';
 import '../Global/hex_color.dart';
+import 'metro_pdf_map.dart';
 import 'settings_ui.dart';
 
 class MoreUi extends StatelessWidget {
@@ -30,13 +32,25 @@ class MoreUi extends StatelessWidget {
         ),
         elevation: 0.0,
         centerTitle: false,
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(
-              Icons.search,
-              size: 24,
-              color: Colors.white,
+            padding: const EdgeInsets.all(10),
+            child: Container(
+              height: 30,
+              width: 30,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(30),
+                splashColor: Colors.grey.shade600,
+                onTap: () {
+                  showToast("Coming soon",
+                      context: context, position: const StyledToastPosition());
+                },
+                child: const Icon(
+                  Icons.search,
+                  size: 24,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ),
         ],
@@ -72,7 +86,9 @@ class MoreUi extends StatelessWidget {
                   subtitle: 'Metro Map',
                   iconPath: 'assets/map.svg',
                   context: context,
-                  onTap: () {}),
+                  onTap: () {
+                    Get.to(() => const MetroPdfMap());
+                  }),
               const SizedBox(
                 height: 12,
               ),

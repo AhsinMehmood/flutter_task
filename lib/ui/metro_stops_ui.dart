@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_task/Controllers/departures_controller.dart';
 import 'package:flutter_task/Global/hex_color.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_task/Models/departures_model.dart';
 import 'package:flutter_task/Models/directions_model.dart';
 import 'package:flutter_task/Models/metro_rail_stations_model.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:swipe_refresh/swipe_refresh.dart';
@@ -42,7 +43,7 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
   // LocationCode
   void initState() {
     super.initState();
-    Future.delayed(const Duration(microseconds: 10)).then((value) {
+    Future.delayed(const Duration(microseconds: 0)).then((value) {
       Provider.of<DeparturesController>(context, listen: false)
           .getDepartures(
               widget.directionsModel.name,
@@ -77,11 +78,13 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
           systemNavigationBarIconBrightness:
               appSettingsController.isDark ? Brightness.light : Brightness.dark,
           // systemNavigationBarDividerColor: null,
-          statusBarColor:
-              appSettingsController.isDark ? Colors.black : Colors.white,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: appSettingsController.isDark
+              ? Theme.of(context).cardColor
+              : Colors.white,
+          statusBarIconBrightness:
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
           statusBarBrightness:
-              appSettingsController.isDark ? Brightness.dark : Brightness.light,
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
         ),
         elevation: 0.0,
         leading: InkWell(
@@ -98,24 +101,42 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: 7),
-            child: Icon(
-              Icons.search,
-              color: appSettingsController.isDark
-                  ? Colors.white
-                  : HexColor(colorBlack100),
-              size: 24,
+            padding: const EdgeInsets.only(
+              right: 10,
             ),
+            child: IconButton(
+                onPressed: () {
+                  showToast('Coming soon',
+                      context: context,
+                      position:
+                          const StyledToastPosition(align: Alignment.center));
+                },
+                icon: Icon(
+                  Icons.search,
+                  color: appSettingsController.isDark
+                      ? Colors.white
+                      : Colors.black,
+                  size: 24,
+                )),
           ),
           Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(
-              Icons.favorite_border_outlined,
-              color: appSettingsController.isDark
-                  ? Colors.white
-                  : HexColor(colorBlack100),
-              size: 24,
+            padding: const EdgeInsets.only(
+              right: 10,
             ),
+            child: IconButton(
+                onPressed: () {
+                  showToast('Coming soon',
+                      context: context,
+                      position:
+                          const StyledToastPosition(align: Alignment.center));
+                },
+                icon: Icon(
+                  Icons.favorite_border_outlined,
+                  color: appSettingsController.isDark
+                      ? Colors.white
+                      : Colors.black,
+                  size: 24,
+                )),
           ),
         ],
         title: Text(
@@ -228,7 +249,10 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                departuresModel.destinationName,
+                                departuresModel.destinationName ==
+                                        'N Carrollton'
+                                    ? 'New Carrollton'
+                                    : departuresModel.destinationName,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineMedium!
@@ -246,11 +270,13 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    departuresModel.min == 'ARR'
-                                        ? 'Arriving'
-                                        : departuresModel.min == 'BRD'
-                                            ? 'Boarding'
-                                            : '${departuresModel.min} min',
+                                    departuresModel.min == ''
+                                        ? '? min'
+                                        : departuresModel.min == 'ARR'
+                                            ? 'Arriving'
+                                            : departuresModel.min == 'BRD'
+                                                ? 'Boarding'
+                                                : '${departuresModel.min} min',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -448,7 +474,7 @@ class _MyCustomExpansionTileState extends State<MyCustomExpansionTile> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      widget.directions.min == '' ? '?' : formattedTime,
+                      formattedTime,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: appSettingsController.isDark
                                 ? Colors.white

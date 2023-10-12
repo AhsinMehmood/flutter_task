@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,9 +6,10 @@ import 'package:flutter_task/Controllers/app_settings.dart';
 import 'package:flutter_task/Controllers/departures_controller.dart';
 import 'package:flutter_task/Controllers/directions_controller.dart';
 import 'package:flutter_task/Controllers/metro_rail_controller.dart';
-import 'package:flutter_task/ui/home_ui.dart';
+import 'package:flutter_task/Controllers/routes_controller.dart';
+
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:json_theme/json_theme.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:provider/provider.dart';
@@ -47,12 +47,13 @@ void main() async {
             create: (context) => MetroRailStationsController()),
         ChangeNotifierProvider(create: (context) => DirectionsController()),
         ChangeNotifierProvider(create: (context) => DeparturesController()),
+        ChangeNotifierProvider(create: (context) => RoutesController()),
       ],
       child: MyApp(
         theme: theme,
         themeStrDark: darkTheme,
       ),
-    ), // Wrap your app
+    ),
   ));
 }
 
@@ -60,7 +61,10 @@ class MyApp extends StatelessWidget {
   final ThemeData theme;
   final ThemeData themeStrDark;
   const MyApp({super.key, required this.theme, required this.themeStrDark});
-
+//
+  ///Great client to work with. Gives clear instructions and sets reasonable deadlines. Would love to collaborate again in the future.
+  ///
+  ///
   @override
   Widget build(BuildContext context) {
     final AppSettingsController appSettingsController =
@@ -69,17 +73,67 @@ class MyApp extends StatelessWidget {
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      title: 'BNC',
+      title: 'BNC Part 2',
       debugShowCheckedModeBanner: false,
       themeMode:
           appSettingsController.isDark ? ThemeMode.dark : ThemeMode.light,
-      darkTheme: themeStrDark.copyWith(
-        textTheme: GoogleFonts.nunitoTextTheme(theme.textTheme),
-      ),
-      theme: theme.copyWith(
-        textTheme: GoogleFonts.nunitoTextTheme(theme.textTheme),
-      ),
+      darkTheme: themeStrDark,
+      theme: theme,
       home: const SplashUi(),
     );
   }
 }
+//nyWMW5nw 
+
+
+
+/**
+ * 
+ * {"Trains":
+ * [{
+ * "Car":"8",
+ * "Destination":"Ballston",
+ * "DestinationCode":"K04",
+ * "DestinationName":"Ballston-MU",
+ * "Group":"1",
+ * "Line":"SV",
+ * "LocationCode":"N06",
+ * "LocationName":"Wiehle-Reston East",
+ * "Min":"3"},
+ * {"Car":"8",
+ * "Destination":"Ashburn",
+ * "DestinationCode":"N12",
+ * "DestinationName":"Ashburn",
+ * "Group":"2",
+ * "Line":"SV",
+ * "LocationCode":"N06",
+ * "LocationName":"Wiehle-Reston East",
+ * "Min":"4"},
+ * {"Car":"8",
+ * "Destination":"Ballston",
+ * "DestinationCode":"K04",
+ * "DestinationName":"Ballston-MU","Group":"1",
+ * "Line":"SV",
+ * "LocationCode":"N06",
+ * "LocationName":"Wiehle-Reston East",
+ * "Min":"11"},
+ * {"Car":"8",
+ * "Destination":"Ashburn",
+ * "DestinationCode":"N12",
+ * "DestinationName":"Ashburn",
+ * "Group":"2",
+ * "Line":"SV",
+ * "LocationCode":"N06",
+ * "LocationName":"Wiehle-Reston East",
+ * "Min":"14"},
+ * {"Car":"8",
+ * "Destination":"Ballston",
+ * "DestinationCode":"K04",
+ * "DestinationName":"Ballston-MU",
+ * "Group":"1",
+ * "Line":"SV",
+ * "LocationCode":"N06",
+ * "LocationName":"Wiehle-Reston East",
+ * "Min":""}]}
+ * 
+ * */

@@ -43,16 +43,22 @@ dependencies:
   # cloud_firestore: ^4.9.2
   device_preview: ^1.1.0
   json_theme: ^4.0.0
+  google_maps_flutter: ^2.5.0
   # percent_indicator: ^4.2.3
   http: ^1.1.0
-  # liquid_pull_to_refresh: ^3.0.1
-  google_fonts:
   intl: ^0.18.1
   flutter_svg: ^2.0.7
-  flutter_expanded_tile: ^0.3.7
+  # flutter_expanded_tile: ^0.3.7
   swipe_refresh: ^1.0.2
   shared_preferences: ^2.2.1
-
+  syncfusion_flutter_pdfviewer: ^23.1.38
+  flutter_styled_toast: ^2.2.1
+  fluttertoast: ^8.2.2
+  custom_info_window: ^1.0.1
+  clippy_flutter: ^2.0.0-nullsafety.1
+  timeago: ^3.5.0
+  anim_search_bar: ^2.0.3
+  # custom_map_markers: ^0.0.2+1
 
 
 dev_dependencies:
@@ -102,10 +108,17 @@ flutter_launcher_icons:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Plus Jakarta Sans
+    - family: Nunito
       fonts:
-        - asset: assets/fonts/static/PlusJakartaSans-Bold.ttf
-        - asset: assets/fonts/static/PlusJakartaSans-Light.ttf
+        - asset: assets/fonts/Nunito-Black.ttf
+        - asset: assets/fonts/Nunito-Bold.ttf
+        - asset: assets/fonts/Nunito-ExtraBold.ttf
+        - asset: assets/fonts/Nunito-ExtraLight.ttf
+        - asset: assets/fonts/Nunito-Light.ttf
+        - asset: assets/fonts/Nunito-Medium.ttf
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-SemiBold.ttf
+
 
   #
   # For details regarding fonts from package dependencies,

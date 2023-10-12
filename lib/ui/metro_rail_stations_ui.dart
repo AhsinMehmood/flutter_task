@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_task/Controllers/rail_stations_controller.dart';
 import 'package:flutter_task/Models/metro_rail_model.dart';
 import 'package:flutter_task/Models/metro_rail_stations_model.dart';
@@ -73,15 +74,24 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: Icon(
-              Icons.search,
-              color: appSettingsController.isDark
-                  ? Colors.white
-                  : HexColor(colorBlack100),
-              size: 24,
+            padding: const EdgeInsets.only(
+              right: 20,
             ),
-          ),
+            child: IconButton(
+                onPressed: () {
+                  showToast('Coming soon',
+                      context: context,
+                      position:
+                          const StyledToastPosition(align: Alignment.center));
+                },
+                icon: Icon(
+                  Icons.search,
+                  color: appSettingsController.isDark
+                      ? Colors.white
+                      : Colors.black,
+                  size: 24,
+                )),
+          )
         ],
         title: Text(
           'Stations',
@@ -102,11 +112,13 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
           systemNavigationBarIconBrightness:
               appSettingsController.isDark ? Brightness.light : Brightness.dark,
           // systemNavigationBarDividerColor: null,
-          statusBarColor:
-              appSettingsController.isDark ? Colors.black : Colors.white,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: appSettingsController.isDark
+              ? Theme.of(context).cardColor
+              : Colors.white,
+          statusBarIconBrightness:
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
           statusBarBrightness:
-              appSettingsController.isDark ? Brightness.dark : Brightness.light,
+              appSettingsController.isDark ? Brightness.light : Brightness.dark,
         ),
         // backgroundColor: HexColor(colorPurple),
       ),
