@@ -172,7 +172,7 @@ class _SelectMultiRoutesUiState extends State<SelectMultiRoutesUi> {
             } else {
               routesController.changeSelectedRouteOption(2);
               routesController.clearPolyLines();
-              routesController.customInfoWindow.hideInfoWindow!();
+              // routesController.customInfoWindow.hideInfoWindow!();
 
               // routesController.selectRoutes(selectedList);
               Get.back();

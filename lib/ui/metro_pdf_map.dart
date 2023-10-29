@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_task/Controllers/app_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+import '../Global/hex_color.dart';
 
 class MetroPdfMap extends StatelessWidget {
   const MetroPdfMap({super.key});
@@ -12,6 +15,14 @@ class MetroPdfMap extends StatelessWidget {
         Provider.of<AppSettingsController>(context);
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.light,
+          // systemNavigationBarDividerColor: null,
+          statusBarColor: HexColor(colorPurple),
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        ),
         backgroundColor:
             appSettingsController.isDark ? Colors.black : Colors.white,
         title: Text(

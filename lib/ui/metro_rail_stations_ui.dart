@@ -306,7 +306,7 @@ class _MetroRailStationsUiState extends State<MetroRailStationsUi> {
                               ? Colors.white
                               : Colors.black,
                           fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w300,
                         ),
                   ),
                 ],

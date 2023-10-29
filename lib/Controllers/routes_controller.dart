@@ -6,12 +6,13 @@ import 'package:clippy_flutter/clippy_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+
 import 'package:flutter_task/Api/routes_data.dart';
+import 'package:flutter_task/Global/hex_color.dart';
 import 'package:flutter_task/Models/buses_model.dart';
 import 'package:flutter_task/Models/poly_route_model.dart';
 import 'package:flutter_task/Models/routes_model.dart';
-import 'package:flutter_task/Widgets/map_widget.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
@@ -26,7 +27,7 @@ class RoutesController with ChangeNotifier {
   List<RouteModel> _routes = [];
   late GoogleMapController _mapController;
   GoogleMapController get mapController {
-    return _mapController!;
+    return _mapController;
   }
 
   initMapController(GoogleMapController controller) {
@@ -66,29 +67,32 @@ class RoutesController with ChangeNotifier {
     if (!_isCountingDown) {
       _isCountingDown = true;
       _countdownTimer =
-          Timer.periodic(const Duration(milliseconds: 1000), (timer) async {
-        _lastUpdate++;
+          Timer.periodic(const Duration(seconds: 1), (timer) async {
         if (_countdownValue > 1) {
           _countdownValue--;
+          _lastUpdate++;
+          notifyListeners();
+          // _mapController.showMarkerInfoWindow(MarkerId(_polyGoneRouteId));
 
           // 042111865865
         } else {
           _isCountingDown = false;
+          _lastUpdate = 0;
           getBuses(isRefresh: true);
-          Fluttertoast.showToast(
-              msg: "Update!",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+          // Fluttertoast.showToast(
+          //     msg: "Update!",
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.black,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
 
           // nyWMW5nw
           stopCountdown();
+          notifyListeners();
           // _countdownValue = 30;
         }
-        notifyListeners();
       });
     }
   }
@@ -178,14 +182,14 @@ class RoutesController with ChangeNotifier {
     notifyListeners();
   }
 
-  Marker? _selectedMarker;
+  MarkerId? _selectedMarker;
 
-  Marker? get selectedMarker => _selectedMarker;
+  MarkerId? get selectedMarker => _selectedMarker;
   final CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController();
   CustomInfoWindowController get customInfoWindow =>
       _customInfoWindowController;
-  void selectMarker(Marker marker) {
+  void selectMarker(MarkerId marker) {
     _selectedMarker = marker;
     notifyListeners();
   }
@@ -213,13 +217,14 @@ class RoutesController with ChangeNotifier {
               busModel.lon,
             ),
             onTap: () {
-              _polylines.clear();
               if (_polyGoneRouteId == busModel.vehicleID + busModel.routeID) {
                 // changePolyGoneRouteId('');
-                _polyGoneRouteId = '';
-                // _polylines.clear();
                 _customInfoWindowController.hideInfoWindow!();
+                _polyGoneRouteId = '';
+                _polylines.clear();
               } else {
+                _polylines.clear();
+                // selectMarker(MarkerId(value));
                 getRoutePolyData(busModel.routeID);
                 // changePolyGoneRouteId(busModel.vehicleID + busModel.routeID);
                 _polyGoneRouteId = busModel.vehicleID + busModel.routeID;
@@ -234,9 +239,14 @@ class RoutesController with ChangeNotifier {
                       Triangle.isosceles(
                         edge: Edge.BOTTOM,
                         child: Container(
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: HexColor(colorGrey80),
+                            ),
+                          ),
                           width: 20.0,
-                          height: 10.0,
+                          height: 15.0,
                         ),
                       ),
                     ],
@@ -249,6 +259,10 @@ class RoutesController with ChangeNotifier {
               }
               updateMarkerIcon(busesModel);
             },
+            // infoWindow: InfoWindow(
+            //     title: '${busModel.routeID} - ${busModel.tripHeadsign}',
+            //     snippet:
+            //         'Heading: ${busModel.directionText}\nLast Update: $_lastUpdate seconds ago'),
             icon: _polyGoneRouteId != busModel.vehicleID + busModel.routeID
                 ? BitmapDescriptor.fromBytes(busModel.directionText == 'NORTH'
                     ? markerArrowUp
@@ -307,7 +321,7 @@ class RoutesController with ChangeNotifier {
     return [..._buses];
   }
 
-  List<RouteModel> _selectedRoutes = [];
+  final List<RouteModel> _selectedRoutes = [];
   List<RouteModel> get selectedRoutes {
     return [..._selectedRoutes];
   }
@@ -331,12 +345,15 @@ class RoutesController with ChangeNotifier {
     notifyListeners();
   }
 
+  changeLastUpdate() {
+    _lastUpdate = 0;
+    notifyListeners();
+  }
+
   getBuses({splash = false, isFilter = false, isRefresh = false}) async {
     stopCountdown();
     changeLoading(true);
-    if (!splash) {
-      _customInfoWindowController.onCameraMove!();
-    }
+    changeLastUpdate();
     try {
       List<BusesModel> busList = [];
       // if (!isFilter) {
@@ -346,9 +363,12 @@ class RoutesController with ChangeNotifier {
       final json = jsonDecode(response.body);
 
       List jsonData = json['BusPositions'];
+
       for (var element in jsonData) {
+        // debugPrint(element.toString());
         busList.add(BusesModel.fromJson(element));
       }
+
       // } else {
       //   busList = _buses;
       // }
@@ -369,6 +389,8 @@ class RoutesController with ChangeNotifier {
         filterBusesByMultiRoutes(busList, splash: splash, isRefresh: isRefresh);
       } else if (_selectedRouteOption == 3) {
         filterSingleRoute(busList, splash: splash, isRefresh: isRefresh);
+      } else if (_selectedRouteOption == 4) {
+        filterSingleRoute(busList, splash: splash, isRefresh: isRefresh);
       }
       if (splash) {
       } else {
@@ -380,6 +402,66 @@ class RoutesController with ChangeNotifier {
       _lastUpdate = 0;
       if (_selectedSingleRoute.isEmpty) {
         changeSelectedSingleRoute(_routes.first.name);
+      }
+      if (_polyGoneRouteId.isNotEmpty) {
+        _customInfoWindowController.addInfoWindow!(
+            Column(
+              children: [
+                Expanded(
+                  child: CustomInfo(
+                      busModel: busList
+                          .where((element) =>
+                              _polyGoneRouteId ==
+                              element.vehicleID + element.routeID)
+                          .toList()
+                          .first),
+                ),
+                Triangle.isosceles(
+                  edge: Edge.BOTTOM,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: HexColor(colorGrey80),
+                      ),
+                    ),
+                    width: 20.0,
+                    height: 15.0,
+                  ),
+                ),
+              ],
+            ),
+            LatLng(
+                busList
+                    .where((element) =>
+                        _polyGoneRouteId == element.vehicleID + element.routeID)
+                    .toList()
+                    .first
+                    .lat,
+                busList
+                    .where((element) =>
+                        _polyGoneRouteId == element.vehicleID + element.routeID)
+                    .toList()
+                    .first
+                    .lon));
+        // _mapController.animateCamera(CameraUpdate.newCameraPosition(
+        //     CameraPosition(
+        //         zoom: 15,
+        //         target: LatLng(
+        //             busList
+        //                 .where((element) =>
+        //                     _polyGoneRouteId ==
+        //                     element.vehicleID + element.routeID)
+        //                 .toList()
+        //                 .first
+        //                 .lat,
+        //             busList
+        //                 .where((element) =>
+        //                     _polyGoneRouteId ==
+        //                     element.vehicleID + element.routeID)
+        //                 .toList()
+        //                 .first
+        //                 .lon))));
       }
 
       changeLoading(false);
@@ -433,10 +515,11 @@ class RoutesController with ChangeNotifier {
   }
 
   getRoutePolyData(String routeId) async {
-    http.Response response = await http.get(Uri.parse(
-        'https://api.wmata.com/Bus.svc/json/jRouteDetails?api_key=844c2a6f10e4430c992d3188f8d591d9&RouteID=$routeId'));
-
-    final json = jsonDecode(response.body);
+    // http.Response response = await http.get(Uri.parse(
+    //     'https://api.wmata.com/Bus.svc/json/jRouteDetails?api_key=844c2a6f10e4430c992d3188f8d591d9&RouteID=$routeId'));
+    final jsonStr =
+        await rootBundle.loadString('assets/wmata_routes/route_$routeId.json');
+    final json = jsonDecode(jsonStr);
     // print(json);
     Map<String, dynamic> polyLineData = json;
     RouteData route = RouteData.fromJson(polyLineData);
@@ -445,7 +528,7 @@ class RoutesController with ChangeNotifier {
     notifyListeners();
   }
 
-  Set<Polyline> _polylines = {};
+  final Set<Polyline> _polylines = {};
   Set<Polyline> get polyLines => _polylines;
   void displayRoute(RouteData routeData) async {
     List<LatLng> routeCoordinates = [];
@@ -459,7 +542,7 @@ class RoutesController with ChangeNotifier {
     // Create a Polyline to display the route
     final Polyline routePolyline = Polyline(
       polylineId: PolylineId(routeData.routeID),
-      width: 5,
+      width: 8,
       color: Colors.grey,
       points: routeCoordinates,
     );

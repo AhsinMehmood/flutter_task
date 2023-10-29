@@ -27,6 +27,9 @@ class _LiveMapUiState extends State<LiveMapUi> {
   @override
   void initState() {
     super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
+
+    Provider.of<RoutesController>(context, listen: false).getBuses();
   }
 
   double percentage = 1.0;
@@ -72,11 +75,31 @@ class _LiveMapUiState extends State<LiveMapUi> {
                 padding: const EdgeInsets.only(top: 0, right: 15),
                 margin: const EdgeInsets.only(top: 10, bottom: 10, right: 0),
                 child: routesController.loading
-                    ? const Center(
+                    ? Center(
                         child: Padding(
-                          padding: EdgeInsets.all(1.0),
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
+                          padding: const EdgeInsets.all(1.0),
+                          child: Stack(
+                            children: [
+                              const CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
+                                child: Center(
+                                  child: Text(
+                                    'Refresh',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       )
@@ -476,6 +499,7 @@ class _LiveMapUiState extends State<LiveMapUi> {
           setState(() {
             selectedRoute = routeModel.name;
             search = '';
+            isEdit = false;
           });
           routesController.changeSelectedRouteOption(3);
           routesController.changeSelectedSingleRoute(selectedRoute);
@@ -511,11 +535,9 @@ class _LiveMapUiState extends State<LiveMapUi> {
               child: Text(
                 routeModel.name,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: selectedRoute == routeModel.name
+                      color: appSettingsController.isDark
                           ? Colors.white
-                          : appSettingsController.isDark
-                              ? Colors.white
-                              : HexColor(colorBlack100),
+                          : HexColor(colorBlack100),
                       fontSize: 12,
                     ),
               ),
@@ -526,12 +548,13 @@ class _LiveMapUiState extends State<LiveMapUi> {
     );
   }
 
-  lisTileCard(String routeModel) {
+  bool isEdit = false;
+
+  lisTileCard(String routeModels) {
     final AppSettingsController appSettingsController =
         Provider.of<AppSettingsController>(context);
     final RoutesController routesController =
         Provider.of<RoutesController>(context);
-
     return Container(
       padding: const EdgeInsets.only(top: 5, left: 10, right: 10, bottom: 5),
       // color: selectedRoute == routeModel.name ? HexColor(colorPurple) : null,
@@ -550,7 +573,7 @@ class _LiveMapUiState extends State<LiveMapUi> {
               ),
               child: Center(
                 child: Text(
-                  routeModel.split('-').first.trim(),
+                  routeModels.split('-').first.trim(),
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -562,36 +585,82 @@ class _LiveMapUiState extends State<LiveMapUi> {
               width: 10,
             ),
             Expanded(
-              child: Text(
-                routeModel,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: appSettingsController.isDark
-                          ? Colors.white
-                          : HexColor(colorBlack100),
-                      fontSize: 12,
+              child: isEdit
+                  ? TextFormField(
+                      initialValue: routeModels,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: appSettingsController.isDark
+                                ? Colors.white
+                                : HexColor(colorBlack100),
+                            fontSize: 12,
+                          ),
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: HexColor(colorBlack60),
+                          ),
+                          hintText: 'Search Routes...',
+                          hintStyle: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  color: HexColor(colorBlack60),
+                                  fontSize: 12,
+                                  fontFamily: 'Nunito',
+                                  fontWeight: FontWeight.normal)),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isEmpty) {
+                            _searchRoutes.clear();
+                            search = '';
+                          } else {
+                            search = value;
+                            _searchRoutes = routesController.routes
+                                .where((element) => element.name
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase()))
+                                .toList();
+                          }
+                        });
+                      },
+                    )
+                  : Text(
+                      routeModels,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: appSettingsController.isDark
+                                ? Colors.white
+                                : HexColor(colorBlack100),
+                            fontSize: 12,
+                          ),
                     ),
-              ),
             ),
-            InkWell(
-              onTap: () {
-                routesController.getBuses(isFilter: true);
-                routesController.changeSelectedSingleRoute('');
-                // SingleRouteBusSearch
-                routesController.changeSelectedRouteOption(1);
-                setState(() {
-                  _searchRoutes.clear();
-                  selectedRoute = '';
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.close,
-                  size: 18,
-                  color: appSettingsController.isDark ? Colors.white : null,
-                ),
-              ),
-            )
+            isEdit
+                ? const SizedBox.shrink()
+                : InkWell(
+                    onTap: () {
+                      setState(() {
+                        isEdit = true;
+                      });
+                      // routesController.getBuses(isFilter: true);
+                      // routesController.changeSelectedSingleRoute('');
+                      // // SingleRouteBusSearch
+                      // routesController.changeSelectedRouteOption(1);
+                      // setState(() {
+                      //   _searchRoutes.clear();
+                      //   selectedRoute = '';
+                      // });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.close,
+                        size: 18,
+                        color:
+                            appSettingsController.isDark ? Colors.white : null,
+                      ),
+                    ),
+                  )
           ],
         ),
       ),

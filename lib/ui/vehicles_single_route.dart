@@ -179,7 +179,7 @@ class _SingleRouteBusSearchState extends State<SingleRouteBusSearch> {
             routesController.changeSelectedRouteOption(widget.option);
             // routesController.changeSelectedSingleRoute(routeModel.name);
             routesController.clearPolyLines();
-            routesController.customInfoWindow.hideInfoWindow!();
+            // routesController.customInfoWindow.hideInfoWindow!();
 
             Get.back();
             await routesController.getBuses(isFilter: true);

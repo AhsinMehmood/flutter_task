@@ -1,7 +1,8 @@
 import 'package:custom_info_window/custom_info_window.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_task/Widgets/custom_info_windo.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -43,6 +44,7 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
       children: [
         GoogleMap(
           mapType: MapType.normal,
+
           initialCameraPosition: routesController.buses.isEmpty
               ? const CameraPosition(
                   target: LatLng(0, 0),
@@ -88,9 +90,9 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
         // if (routesController.polyGoneRouteId != '')
         CustomInfoWindow(
           controller: routesController.customInfoWindow,
-          height: 100,
-          width: 200,
-          offset: 50,
+          height: 70,
+          width: 180,
+          offset: 30,
         ),
       ],
     );

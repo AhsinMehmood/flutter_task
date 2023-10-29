@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 // import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 
+import '../Api/save_routes.dart';
+
 class MetroRail extends StatefulWidget {
   const MetroRail({super.key});
 
@@ -46,14 +48,21 @@ class _MetroRailState extends State<MetroRail> {
         elevation: 0.0,
         backgroundColor: HexColor(colorPurple),
         centerTitle: false,
-        title: Text(
-          'Metro Rail',
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'Nunito',
-                fontWeight: FontWeight.normal,
-              ),
+        title: InkWell(
+          onTap: () async {
+            print('object');
+            final routeIDs = await fetchRouteIDs();
+            await fetchAndSaveRouteDetails(routeIDs);
+          },
+          child: Text(
+            'Metro Rail',
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontFamily: 'Nunito',
+                  fontWeight: FontWeight.normal,
+                ),
+          ),
         ),
         actions: [
           Padding(

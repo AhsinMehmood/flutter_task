@@ -219,7 +219,7 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
               : SwipeRefresh.material(
                   stateStream: _stream2,
                   // refreshTriggerPullDistance: 80.0,
-                  // backgroundColor: HexColor(colorPurple),
+                  backgroundColor: HexColor(colorPurple),
                   onRefresh: () async {
                     await departuresController.getDepartures(
                         widget.directionsModel.name,
@@ -234,7 +234,7 @@ class _MetroStopsUiState extends State<MetroStopsUi> {
                       itemCount: departuresController.departures.length,
                       itemBuilder: (context, index) {
                         // print(departuresController.departures[index].min);
-                        print('object');
+                        // print('object');
                         final DeparturesModel departuresModel =
                             departuresController.departures[index];
                         // if(departuresModel.min)

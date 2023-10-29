@@ -57,7 +57,7 @@ dependencies:
   custom_info_window: ^1.0.1
   clippy_flutter: ^2.0.0-nullsafety.1
   timeago: ^3.5.0
-  anim_search_bar: ^2.0.3
+  # anim_search_bar: ^2.0.3
   # custom_map_markers: ^0.0.2+1
 
 
@@ -89,6 +89,7 @@ flutter:
     - assets/
     - assets/fonts/
     - assets/theme.json
+    - assets/wmata_routes/
   #   - images/a_dot_ham.jpeg
 flutter_launcher_icons:
   android: "launcher_icon"
