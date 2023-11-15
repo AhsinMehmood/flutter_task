@@ -72,6 +72,17 @@ class _SelectMultiRoutesUiState extends State<SelectMultiRoutesUi> {
             statusBarBrightness: Brightness.dark,
           ),
           backgroundColor: HexColor(colorPurple),
+          actions: [
+            if (routesController.selectedRoutes.isNotEmpty)
+              IconButton(
+                  onPressed: () {
+                    routesController.clearSelectedRoutes();
+                  },
+                  icon: const Icon(
+                    Icons.clear_rounded,
+                    color: Colors.white,
+                  ))
+          ],
         ),
         body: Column(
           children: [

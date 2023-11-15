@@ -43,7 +43,9 @@ class _CustomInfoState extends State<CustomInfo> {
             Text(
               '${widget.busModel.routeID} - ${widget.busModel.tripHeadsign}',
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Colors.black,
+                    color: appSettingsController.isDark
+                        ? Colors.white
+                        : Colors.black,
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
@@ -51,7 +53,9 @@ class _CustomInfoState extends State<CustomInfo> {
             Text(
               'Heading: ${widget.busModel.directionText}',
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.black,
+                    color: appSettingsController.isDark
+                        ? Colors.white
+                        : Colors.black,
                     fontSize: 10,
                     fontWeight: FontWeight.normal,
                   ),
@@ -59,7 +63,9 @@ class _CustomInfoState extends State<CustomInfo> {
             Text(
               'Last Update: ${routesController.lastUpdate} seconds ago',
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.black,
+                    color: appSettingsController.isDark
+                        ? Colors.white
+                        : Colors.black,
                     fontSize: 10,
                     fontWeight: FontWeight.normal,
                   ),

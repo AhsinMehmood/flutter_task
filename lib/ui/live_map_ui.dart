@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,6 +16,7 @@ import '../Widgets/map_widget.dart';
 
 import '../Widgets/routes_selection_dialoge.dart';
 import 'select_multi_routes_ui.dart';
+import 'vehicles_single_route.dart';
 
 class LiveMapUi extends StatefulWidget {
   const LiveMapUi({super.key});
@@ -24,6 +26,8 @@ class LiveMapUi extends StatefulWidget {
 }
 
 class _LiveMapUiState extends State<LiveMapUi> {
+  TextEditingController searchController = TextEditingController();
+  FocusNode focus = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -45,7 +49,9 @@ class _LiveMapUiState extends State<LiveMapUi> {
     return WillPopScope(
       onWillPop: () async {
         routesController.stopCountdown();
-        routesController.changeSelectedRouteOption(3);
+        // routesController.changeSelectedRouteOption(3);
+        routesController.changeSelectedRouteOption(1);
+
         routesController.clearPolyLines();
         // Get.offAll(() => const Home());
 
@@ -132,7 +138,308 @@ class _LiveMapUiState extends State<LiveMapUi> {
             InkWell(
               borderRadius: BorderRadius.circular(12),
               onTap: () {
-                Get.dialog(const RoutesSelection());
+                Get.dialog(
+                  Dialog(
+                    backgroundColor: Colors.transparent,
+                    child: Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: appSettingsController.isDark
+                            ? Theme.of(context).cardColor
+                            : Colors.white,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      Get.close(1);
+                                    },
+                                    child: const Icon(Icons.close)),
+                              ],
+                            ),
+                            Text(
+                              'Please select the route you\nwant option',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                    color: appSettingsController.isDark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontSize: 14,
+                                  ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'System will automatically display the results of the\nselected route option',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                    color: appSettingsController.isDark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontSize: 11,
+                                  ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Card(
+                              color: appSettingsController.isDark
+                                  ? Theme.of(context).cardColor
+                                  : Colors.white,
+
+                              // elevation: 4.0,
+                              elevation: 2.0,
+
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  routesController.getBuses(isFilter: true);
+
+                                  // SingleRouteBusSearch
+                                  routesController.changeSelectedRouteOption(1);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/multi_routes.svg',
+                                        color: appSettingsController.isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        height: 25,
+                                        width: 25,
+                                      ),
+                                      Text(
+                                        'All Vehicles',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium!
+                                            .copyWith(
+                                              color:
+                                                  appSettingsController.isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              fontSize: 11,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Card(
+                              color: appSettingsController.isDark
+                                  ? Theme.of(context).cardColor
+                                  : Colors.white,
+                              elevation: 2.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  // routesController.changeSelectedRouteOption(2);
+
+                                  Navigator.pop(context);
+                                  Get.to(() => const SelectMultiRoutesUi());
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/vehicles_on_multi.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: appSettingsController.isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                      Text(
+                                        'Vehicles on Multiple routes',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium!
+                                            .copyWith(
+                                              color:
+                                                  appSettingsController.isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              fontSize: 11,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Card(
+                              color: appSettingsController.isDark
+                                  ? Theme.of(context).cardColor
+                                  : Colors.white,
+                              elevation: 2.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: InkWell(
+                                onTap: () async {
+                                  Navigator.pop(context);
+                                  // routesController.getBuses();
+                                  RouteModel route =
+                                      routesController.routes.first;
+                                  setState(() {
+                                    selectedRoute = route.name;
+                                    search = '';
+                                    isEdit = false;
+                                    searchController.text = route.name
+                                        .split('-')
+                                        .sublist(1)
+                                        .join('-')
+                                        .trim();
+                                    focus.requestFocus();
+                                  });
+                                  routesController.changeSelectedRouteOption(3);
+                                  routesController
+                                      .changeSelectedSingleRoute(selectedRoute);
+                                  routesController.clearPolyLines();
+
+                                  // Get.back();
+                                  await routesController.getBuses(
+                                      isFilter: true);
+                                  // routesController.changeSelectedRouteOption(1);
+                                  // routesController.changeSelectedRouteOption(3);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/directions_bus.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: appSettingsController.isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                      Text(
+                                        'Vehicles on one route',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium!
+                                            .copyWith(
+                                              color:
+                                                  appSettingsController.isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              fontSize: 11,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Card(
+                              color: appSettingsController.isDark
+                                  ? Theme.of(context).cardColor
+                                  : Colors.white,
+                              elevation: 2.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  // routesController.getBuses();
+                                  Get.to(() => const SingleRouteBusSearch(
+                                        option: 4,
+                                      ));
+                                  // routesController.changeSelectedRouteOption(4);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/place.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: appSettingsController.isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                      Text(
+                                        'Routes',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium!
+                                            .copyWith(
+                                              color:
+                                                  appSettingsController.isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              fontSize: 11,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.only(right: 20, left: 10),
@@ -171,7 +478,7 @@ class _LiveMapUiState extends State<LiveMapUi> {
             onPressed: () {
               routesController.stopCountdown();
               routesController.clearPolyLines();
-              routesController.changeSelectedRouteOption(3);
+              routesController.changeSelectedRouteOption(1);
               // Get.offAll(() => const Home());
               Navigator.pop(context);
             },
@@ -204,9 +511,10 @@ class _LiveMapUiState extends State<LiveMapUi> {
                     margin: const EdgeInsets.only(
                         top: 10, bottom: 6, right: 20, left: 20),
                     width: Get.width,
+                    height: 50,
                     decoration: BoxDecoration(
                         color: appSettingsController.isDark
-                            ? Theme.of(context).cardColor
+                            ? HexColor(colorBlack80)
                             : Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
@@ -219,11 +527,7 @@ class _LiveMapUiState extends State<LiveMapUi> {
                         // top: 0,
                         // left: 15,
                         ),
-                    child: routesController.selectedRouteOption == 3
-                        ? lisTileCard(routesController.selectedSingleRoute)
-                        : routesController.selectedRouteOption == 4
-                            ? lisTileCard(routesController.selectedSingleRoute)
-                            : _searchBar(),
+                    child: _searchBar(),
                   ),
                   if (search.isNotEmpty)
                     Container(
@@ -434,23 +738,73 @@ class _LiveMapUiState extends State<LiveMapUi> {
   Widget _searchBar() {
     final RoutesController routesController =
         Provider.of<RoutesController>(context);
+    final AppSettingsController appSettingsController =
+        Provider.of<AppSettingsController>(context);
     return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 15),
+      padding: const EdgeInsets.only(left: 0, right: 0),
       child: Column(
         children: [
-          TextFormField(
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: HexColor(colorBlack60),
-                ),
-                hintText: 'Search Routes...',
-                hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: HexColor(colorBlack60),
-                    fontSize: 12,
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.normal)),
+          CupertinoTextField(
+            focusNode: focus,
+            placeholder: 'Search Routes...',
+            suffix: selectedRoute.isNotEmpty
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedRoute = '';
+                        focus.requestFocus();
+                      });
+                      searchController.clear();
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      size: 20,
+                      color: appSettingsController.isDark
+                          ? Colors.white
+                          : HexColor(colorBlack80),
+                    ))
+                : null,
+            controller: searchController,
+            // padding: const EdgeInsets.only(top: 2),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: appSettingsController.isDark
+                    ? Colors.white
+                    : HexColor(colorBlack80),
+                fontSize: 12,
+                fontFamily: 'Nunito',
+                fontWeight: FontWeight.normal),
+            prefix: selectedRoute.isEmpty
+                ? Container(
+                    height: 36,
+                    width: 47.53,
+                    margin: const EdgeInsets.only(
+                        left: 5, right: 5, bottom: 5, top: 5),
+                    child: Icon(
+                      Icons.search,
+                      color: appSettingsController.isDark
+                          ? Colors.white
+                          : HexColor(colorBlack80),
+                    ),
+                  )
+                : Container(
+                    height: 36,
+                    width: 47.53,
+                    margin: const EdgeInsets.only(
+                        left: 10, right: 10, bottom: 5, top: 5),
+                    decoration: BoxDecoration(
+                      color: HexColor(colorGrey80),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        selectedRoute.split('-').first,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: Colors.black),
+                      ),
+                    ),
+                  ),
             onChanged: (value) {
               setState(() {
                 if (value.isEmpty) {
@@ -466,7 +820,20 @@ class _LiveMapUiState extends State<LiveMapUi> {
                 }
               });
             },
-          ),
+            placeholderStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: appSettingsController.isDark
+                    ? Colors.white
+                    : HexColor(colorBlack80),
+                fontSize: 12,
+                fontFamily: 'Nunito',
+                fontWeight: FontWeight.normal),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                    color: appSettingsController.isDark
+                        ? HexColor(colorBlack80)
+                        : Colors.white)),
+          )
         ],
       ),
     );
@@ -485,7 +852,7 @@ class _LiveMapUiState extends State<LiveMapUi> {
 
       decoration: BoxDecoration(
         color: appSettingsController.isDark
-            ? Theme.of(context).cardColor
+            ? HexColor(colorBlack80)
             : Colors.white,
         borderRadius: index == 0
             ? const BorderRadius.only(
@@ -500,6 +867,9 @@ class _LiveMapUiState extends State<LiveMapUi> {
             selectedRoute = routeModel.name;
             search = '';
             isEdit = false;
+            searchController.text =
+                routeModel.name.split('-').sublist(1).join('-').trim();
+            FocusManager.instance.primaryFocus?.unfocus();
           });
           routesController.changeSelectedRouteOption(3);
           routesController.changeSelectedSingleRoute(selectedRoute);

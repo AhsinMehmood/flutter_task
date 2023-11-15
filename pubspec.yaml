@@ -57,6 +57,7 @@ dependencies:
   custom_info_window: ^1.0.1
   clippy_flutter: ^2.0.0-nullsafety.1
   timeago: ^3.5.0
+  geolocator: ^10.1.0
   # anim_search_bar: ^2.0.3
   # custom_map_markers: ^0.0.2+1
 

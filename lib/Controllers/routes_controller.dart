@@ -14,6 +14,7 @@ import 'package:flutter_task/Models/poly_route_model.dart';
 import 'package:flutter_task/Models/routes_model.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -43,7 +44,7 @@ class RoutesController with ChangeNotifier {
   late Uint8List onTapArrowRight;
   late Uint8List onTapArrowDown;
   late Uint8List onTapArrowLeft;
-  int _selectedRouteOption = 3;
+  int _selectedRouteOption = 1;
   int get selectedRouteOption {
     return _selectedRouteOption;
   }
@@ -72,26 +73,13 @@ class RoutesController with ChangeNotifier {
           _countdownValue--;
           _lastUpdate++;
           notifyListeners();
-          // _mapController.showMarkerInfoWindow(MarkerId(_polyGoneRouteId));
-
-          // 042111865865
         } else {
           _isCountingDown = false;
           _lastUpdate = 0;
           getBuses(isRefresh: true);
-          // Fluttertoast.showToast(
-          //     msg: "Update!",
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.black,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
-
           // nyWMW5nw
           stopCountdown();
           notifyListeners();
-          // _countdownValue = 30;
         }
       });
     }
@@ -140,6 +128,14 @@ class RoutesController with ChangeNotifier {
         .where((element) =>
             element.routeID == _selectedSingleRoute.split('-').first.trim())
         .toList();
+    if (bbb.isEmpty) {
+      RouteModel route = _routes
+          .where((element) =>
+              element.routeID == _selectedSingleRoute.split('-').first.trim())
+          .first;
+      getRoutePolyData(route.routeID);
+      //  _polyGoneRouteId = _selectedSingleRoute.split('-').sublist(1).join('-').trim();
+    }
     addMarkers(bbb);
     _buses = bbb;
     if (!splash) {
@@ -205,8 +201,17 @@ class RoutesController with ChangeNotifier {
     addMarkers(busesModel);
   }
 
-  addMarkers(List<BusesModel> busesModel) {
+  addMarkers(List<BusesModel> busesModel) async {
     _markers.clear();
+    determinePosition().then((value) {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('value'),
+          position: LatLng(value.latitude, value.longitude),
+          icon: BitmapDescriptor.defaultMarker,
+        ),
+      );
+    });
 
     for (BusesModel busModel in busesModel) {
       _markers.add(
@@ -379,6 +384,8 @@ class RoutesController with ChangeNotifier {
 
         if (!splash) {
           if (!isRefresh) {
+            // Position position = await determinePosition();
+
             _mapController.animateCamera(CameraUpdate.newCameraPosition(
                 CameraPosition(
                     target: LatLng(busList.first.lat, busList.first.lon),
@@ -400,9 +407,9 @@ class RoutesController with ChangeNotifier {
 
       _updatedTime = DateTime.now();
       _lastUpdate = 0;
-      if (_selectedSingleRoute.isEmpty) {
-        changeSelectedSingleRoute(_routes.first.name);
-      }
+      // if (_selectedSingleRoute.isEmpty) {
+      //   changeSelectedSingleRoute(_routes.first.name);
+      // }
       if (_polyGoneRouteId.isNotEmpty) {
         _customInfoWindowController.addInfoWindow!(
             Column(
@@ -509,6 +516,12 @@ class RoutesController with ChangeNotifier {
     notifyListeners();
   }
 
+  clearSelectedRoutes() {
+    _selectedRoutes.clear();
+    _selectedRoutesIds.clear();
+    notifyListeners();
+  }
+
   late RouteData _routeData;
   RouteData get routePolyData {
     return _routeData;
@@ -553,5 +566,42 @@ class RoutesController with ChangeNotifier {
     notifyListeners();
     // _polylines(routePolyline);
     // });
+  }
+
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
   }
 }

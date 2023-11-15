@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.google.gms.google-services'
 android {
     namespace "com.transit.bnc"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {

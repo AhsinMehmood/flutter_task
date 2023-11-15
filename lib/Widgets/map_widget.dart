@@ -44,7 +44,7 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
       children: [
         GoogleMap(
           mapType: MapType.normal,
-
+          // myLocationEnabled: true,
           initialCameraPosition: routesController.buses.isEmpty
               ? const CameraPosition(
                   target: LatLng(0, 0),
